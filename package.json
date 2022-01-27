@@ -1,0 +1,43 @@
+{
+  "name": "mongodb-rest-api",
+  "version": "1.0.0",
+  "description": "typical REST api",
+  "main": "server.js",
+  "scripts": {
+    "start": "env-cmd -f ./config/dev.env nodemon server.js",
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryan-k8/nosql-rest-api.git"
+  },
+  "keywords": [
+    "rest api",
+    "jwt",
+    "mongodb",
+    "express"
+  ],
+  "author": "ryan-k8",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryan-k8/nosql-rest-api/issues"
+  },
+  "homepage": "https://github.com/ryan-k8/nosql-rest-api#readme",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "cloudinary": "^1.28.1",
+    "cookie-parser": "^1.4.6",
+    "crypto": "^1.0.1",
+    "dotenv": "^14.2.0",
+    "env-cmd": "^10.1.0",
+    "express": "^4.17.2",
+    "joi": "^17.6.0",
+    "mongoose": "^6.1.7",
+    "multer": "^1.4.4",
+    "multer-storage-cloudinary": "^4.0.0"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15"
+  }
+}
