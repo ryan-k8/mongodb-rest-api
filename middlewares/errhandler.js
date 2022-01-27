@@ -1,3 +1,5 @@
+const { MulterError } = require("multer");
+
 module.exports = (err, req, res, next) => {
   try {
     if (err instanceof MulterError) {
