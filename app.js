@@ -2,11 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-const { cloudinary, storage } = require("./util/cloudinary");
-const upload = require("./middlewares/upload");
 const errHandler = require("./middlewares/errhandler");
-
-const { MulterError } = require("multer");
 
 require("dotenv").config();
 
