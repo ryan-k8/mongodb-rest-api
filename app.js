@@ -4,6 +4,7 @@ const morgan = require("morgan");
 
 const { cloudinary, storage } = require("./util/cloudinary");
 const upload = require("./middlewares/upload");
+const errHandler = require("./middlewares/errhandler");
 
 const { MulterError } = require("multer");
 
@@ -15,25 +16,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 
-app.use((err, req, res, next) => {
-  try {
-    if (err instanceof MulterError) {
-      console.log(err);
-      return res.status(400).json({
-        error: {
-          detail: err.message,
-        },
-      });
-    }
-
-    res.status(500).json({
-      error: {
-        detail: "internal server error",
-      },
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
+app.use(errHandler);
 
 module.exports = app;

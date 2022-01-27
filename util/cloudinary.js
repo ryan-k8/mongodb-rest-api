@@ -9,9 +9,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+const allowedFormats = ["image/jpeg", "image/jpg", "image/png"];
+
 const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
+    if (!allowedFormats.includes(file.mimetype)) {
+      throw new UploadError(
+        `only files of mimetype ${allowedFormats.join(",")} are allowed`
+      );
+    }
+
     return {
       folder: process.env.CLOUDINARY_FOLDER_NAME,
       public_id: crypto.randomBytes(16).toString("hex"),
