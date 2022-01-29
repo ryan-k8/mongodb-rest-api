@@ -39,6 +39,7 @@ module.exports = {
           if (err) {
             reject(err);
           }
+          redisClient.set(uid, token, 60 * 60 * 24 * 7);
           resolve(token);
         }
       );

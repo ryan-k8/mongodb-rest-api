@@ -3,7 +3,7 @@ const Joi = require("joi");
 const doctorSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),
-  password: Joi.string().min(8).max(30).required(),
+  password: Joi.string().min(8).max(20).required(),
 
   profileImage: Joi.object().keys({
     url: Joi.string(),
@@ -13,6 +13,11 @@ const doctorSchema = Joi.object({
       )
     ),
   }),
+});
+
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
 });
 
 const patientSchema = Joi.object({
@@ -30,4 +35,5 @@ module.exports = {
   doctorSchema,
   patientSchema,
   reportSchema,
+  loginSchema,
 };

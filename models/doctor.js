@@ -1,4 +1,6 @@
+const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
+const { ExpressError } = require("../util/err");
 
 const Schema = mongoose.Schema;
 
@@ -35,5 +37,24 @@ const doctorSchema = new Schema(
   { timestamps: true }
 );
 
+doctorSchema.statics.findByCredentials = async function ({ email, password }) {
+  try {
+    const user = await Doctor.findOne({ email: email });
+
+    if (!user) {
+      throw new ExpressError("no such user exists", 401);
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+      throw new ExpressError("incorrect password", 401);
+    }
+
+    return { id: user._id };
+  } catch (err) {
+    throw err;
+  }
+};
 const Doctor = mongoose.model("doctor", doctorSchema);
 module.exports = Doctor;

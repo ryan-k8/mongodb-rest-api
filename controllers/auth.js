@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 
 const Doctor = require("../models/doctor");
-const { doctorSchema } = require("../models/validation/schema");
+const { doctorSchema, loginSchema } = require("../models/validation/schema");
 const { ExpressError } = require("../util/err");
 const { signAccessToken, signRefreshToken } = require("../util/jwt");
 
@@ -31,6 +31,21 @@ exports.register = async (req, res, next) => {
     const refreshToken = await signRefreshToken(uid.toString());
 
     return res.status(201).json({ accessToken, refreshToken });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.login = async (req, res, next) => {
+  try {
+    const result = await loginSchema.validateAsync(req.body);
+
+    const { id: uid } = await Doctor.findByCredentials(result);
+
+    const accessToken = await signAccessToken(uid.toString());
+    const refreshToken = await signRefreshToken(uid.toString());
+
+    res.status(200).json({ accessToken, refreshToken });
   } catch (err) {
     next(err);
   }
