@@ -15,6 +15,7 @@ module.exports = (err, req, res, next) => {
         detail: "internal server error",
       },
     });
+    console.log(err);
   } catch (err) {
     console.log(err);
   }
