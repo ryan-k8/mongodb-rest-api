@@ -18,6 +18,7 @@ const doctorSchema = new Schema(
       },
       cloudinaryId: {
         type: String,
+        default: "default-user_kvcpvr",
       },
     },
 

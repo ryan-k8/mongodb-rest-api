@@ -16,7 +16,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 
-app.use;
+app.use("/auth", authRoutes);
+
+app.use("/", (req, res) => res.status(404));
 
 app.use(errHandler);
 
