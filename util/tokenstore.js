@@ -33,4 +33,13 @@ module.exports = {
       });
     });
   },
+
+  del: (key) => {
+    return new Promise((resolve, reject) => {
+      redis
+        .del(key)
+        .then((result) => resolve(result))
+        .catch((err) => reject(err));
+    });
+  },
 };

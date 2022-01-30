@@ -3,7 +3,12 @@ const bcrypt = require("bcryptjs");
 const Doctor = require("../models/doctor");
 const { doctorSchema, loginSchema } = require("../models/validation/schema");
 const { ExpressError } = require("../util/err");
-const { signAccessToken, signRefreshToken } = require("../util/jwt");
+const {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} = require("../util/jwt");
+const redisClient = require("../util/tokenstore");
 
 exports.register = async (req, res, next) => {
   try {
@@ -46,6 +51,23 @@ exports.login = async (req, res, next) => {
     const refreshToken = await signRefreshToken(uid.toString());
 
     res.status(200).json({ accessToken, refreshToken });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.logout = async (req, res, next) => {
+  try {
+    const token = req.headers["x-auth-refresh-token"];
+
+    if (!token) {
+      throw new ExpressError("bad request", 400);
+    }
+
+    const uid = await verifyRefreshToken(token);
+    await redisClient.del(uid);
+
+    res.sendStatus(204);
   } catch (err) {
     next(err);
   }

@@ -66,17 +66,14 @@ module.exports = {
             err.name === "JsonWebTokenError" ? "unauthorized" : err.message;
           reject(new ExpressError(errmsg, 401));
         }
-
         const { id: uid } = decoded;
-        let result;
 
-        redisClient.get(uid).then((res) => (result = res));
-
-        if (token !== result) {
-          reject(new ExpressError("unauthorized", 401));
-        }
-
-        resolve(uid);
+        redisClient.get(uid).then((res) => {
+          if (token != res) {
+            reject(new ExpressError("unauthorized", 401));
+          }
+          resolve(uid);
+        });
       });
     });
   },
