@@ -1,7 +1,15 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 const Doctor = require("../models/doctor");
-const { doctorSchema, loginSchema } = require("../models/validation/schema");
+const Token = require("../models/resetToken");
+const {
+  doctorSchema,
+  loginSchema,
+  emailSchema,
+  passwordSchema,
+} = require("../models/validation/schema");
+const sendEmail = require("../util/email");
 const { ExpressError } = require("../util/err");
 const {
   signAccessToken,
@@ -90,6 +98,64 @@ exports.refreshToken = async (req, res, next) => {
     res
       .status(200)
       .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const result = await emailSchema.validateAsync(req.body);
+
+    const user = await Doctor.findOne({ email: result.email });
+
+    if (!user) {
+      throw new ExpressError("no such user exists", 400);
+    }
+
+    let token = await Token.findOne({ email: result.email });
+
+    if (!token) {
+      const tokenVal = crypto.randomBytes(16).toString("hex");
+      token = await Token.create({
+        userId: user._id,
+        token: tokenVal,
+      });
+    }
+
+    const emailText = `
+    <h1>reset password</h1>
+    /auth/reset-password/${user._id.toString()}/${token.token}
+    `;
+
+    await sendEmail(user.email, "reset password", emailText);
+    res.sendStatus(200);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.verifyAndResetPassword = async (req, res, next) => {
+  try {
+    const { userId, token } = req.params;
+    const result = await passwordSchema.validateAsync(req.body);
+
+    const user = await Doctor.findById(userId);
+
+    if (!user) {
+      throw new ExpressError("invalid link or expired", 400);
+    }
+
+    const verified = await Token.verify(token);
+    if (!verified) {
+      throw new ExpressError("invalid link or expired", 400);
+    }
+
+    user.password = result.password;
+    await user.save();
+    await Token.findOneAndDelete({ userId: userId });
+
+    res.sendStatus(200);
   } catch (err) {
     next(err);
   }

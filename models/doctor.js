@@ -37,6 +37,13 @@ const doctorSchema = new Schema(
   { timestamps: true }
 );
 
+doctorSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
+  next();
+});
+
 doctorSchema.statics.findByCredentials = async function ({ email, password }) {
   try {
     const user = await Doctor.findOne({ email: email });

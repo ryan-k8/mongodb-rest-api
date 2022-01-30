@@ -31,9 +31,19 @@ const reportSchema = Joi.object({
   status: Joi.string().required(),
 });
 
+const emailSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+const passwordSchema = Joi.object({
+  password: Joi.string().min(8).max(20).required(),
+});
+
 module.exports = {
   doctorSchema,
   patientSchema,
   reportSchema,
   loginSchema,
+  emailSchema,
+  passwordSchema,
 };
