@@ -18,7 +18,7 @@ app.use(morgan("dev"));
 
 app.use("/auth", authRoutes);
 
-app.use("/", (req, res) => res.status(404));
+app.use("/", (req, res) => res.sendStatus(404));
 
 app.use(errHandler);
 

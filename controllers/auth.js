@@ -72,3 +72,25 @@ exports.logout = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.refreshToken = async (req, res, next) => {
+  try {
+    const token = req.headers["x-auth-refresh-token"];
+
+    if (!token) {
+      throw new ExpressError("bad request", 400);
+    }
+
+    const uid = await verifyRefreshToken(token);
+    await redisClient.del(uid);
+
+    const newAccessToken = await signAccessToken(uid);
+    const newRefreshToken = await signRefreshToken(uid);
+
+    res
+      .status(200)
+      .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+  } catch (err) {
+    next(err);
+  }
+};
