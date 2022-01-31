@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
 
     const { id } = await verifyAccessToken(token);
 
-    req.user = await Doctor.findById(id);
+    req.user = { uid: id };
 
     next();
   } catch (err) {
