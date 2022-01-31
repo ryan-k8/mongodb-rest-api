@@ -3,11 +3,21 @@ const { ExpressError } = require("../util/err");
 module.exports = (permission) => {
   return async (req, res, next) => {
     try {
-      const allowed = await permission({ ...req.user, ...req.params });
+      const [err, allowed] = await permission({
+        ...req.user,
+        ...req.params,
+      });
+
+      if (err) {
+        if (err.isJoi) {
+          err.isJoi = false;
+          next(new ExpressError("invalid id type", 400));
+        }
+        next(err);
+      }
 
       if (!allowed) {
-        const err = new ExpressError("forbidden", 403);
-        next(err);
+        next(new ExpressError("forbidden", 403));
       }
 
       next();

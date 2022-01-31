@@ -36,8 +36,6 @@ exports.register = async (req, res, next) => {
       };
     }
 
-    result.password = await bcrypt.hash(result.password, 12);
-
     const { _id: uid } = await Doctor.create(result);
 
     const accessToken = await signAccessToken(uid.toString());

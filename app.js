@@ -18,6 +18,7 @@ app.use(morgan("dev"));
 
 app.use("/auth", authRoutes);
 app.use("/patients", patientRoutes);
+app.use("/reports", reportRoutes);
 
 app.use("/", (req, res) => res.sendStatus(404));
 

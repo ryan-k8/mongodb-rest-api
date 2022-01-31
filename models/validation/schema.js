@@ -28,7 +28,16 @@ const patientSchema = Joi.object({
 const reportSchema = Joi.object({
   patient: Joi.string().pattern(new RegExp("^[0-9a-fA-F]{24}$")).required(),
   doctor: Joi.string().pattern(new RegExp("^[0-9a-fA-F]{24}$")).required(),
-  status: Joi.string().required(),
+  status: Joi.string()
+    .valid(
+      ...[
+        "negative",
+        "travelled-quarantine",
+        "symptoms-quarantine",
+        "positive-admit",
+      ]
+    )
+    .required(),
 });
 
 const emailSchema = Joi.object({
@@ -39,6 +48,11 @@ const passwordSchema = Joi.object({
   password: Joi.string().min(8).max(20).required(),
 });
 
+const objectIdSchema = Joi.string()
+  .pattern(new RegExp("^[0-9a-fA-F]{24}$"))
+  .message("invalid id type")
+  .required();
+
 module.exports = {
   doctorSchema,
   patientSchema,
@@ -46,4 +60,5 @@ module.exports = {
   loginSchema,
   emailSchema,
   passwordSchema,
+  objectIdSchema,
 };
