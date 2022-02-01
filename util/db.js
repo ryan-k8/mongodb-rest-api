@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@dev-cluster.gmixj.mongodb.net/nosql-restapi?retryWrites=true&w=majority`;
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@dev-cluster.gmixj.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 module.exports = async () => {
   try {
